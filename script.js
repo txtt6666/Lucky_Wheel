@@ -109,8 +109,8 @@ let bgAudio = null;
 let spinAudio = null;
 
 // 新增：默认音频路径
-const DEFAULT_BG_MUSIC = './Lucky_Wheel/浪漫氛围.mp3';
-const DEFAULT_SPIN_SOUND = './Lucky_Wheel/抽奖音效.mp3';
+const DEFAULT_BG_MUSIC = './Lucky_Wheel/background.mp3';
+const DEFAULT_SPIN_SOUND = './Lucky_Wheel/lottery.mp3';
 
 // 新增：音频状态
 let audioState = {
