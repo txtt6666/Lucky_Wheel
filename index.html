@@ -2596,7 +2596,7 @@
             initDefaultData();
             initDefaultTemplates();
             resizeCanvas();
-            drawWheel();
+            loadWheelImage(); // 加载转盘图片
             updateStats();
             updatePlayerDisplay();
             createHearts();
@@ -4122,7 +4122,47 @@
             }
         }
 
+        // 加载转盘图片
+        let wheelImage = null;
+        
+        function loadWheelImage() {
+            wheelImage = new Image();
+            wheelImage.onload = function() {
+                drawWheel();
+            };
+            wheelImage.onerror = function() {
+                console.error('转盘图片加载失败，使用默认绘制方式');
+                drawDefaultWheel();
+            };
+            wheelImage.src = 'wheel.png';
+        }
+
         function drawWheel() {
+            const canvas = document.getElementById('wheelCanvas');
+            const ctx = canvas.getContext('2d');
+            const dpr = window.devicePixelRatio || 1;
+            const displayWidth = canvas.width / dpr;
+            const displayHeight = canvas.height / dpr;
+            const centerX = displayWidth / 2;
+            const centerY = displayHeight / 2;
+            const radius = (displayWidth / 2) - 10;
+
+            ctx.clearRect(0, 0, displayWidth, displayHeight);
+
+            if (wheelImage && wheelImage.complete && wheelImage.naturalWidth !== 0) {
+                // 使用图片绘制转盘
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(currentRotation * Math.PI / 180);
+                ctx.drawImage(wheelImage, -radius, -radius, radius * 2, radius * 2);
+                ctx.restore();
+            } else {
+                // 如果图片未加载，使用默认绘制方式
+                drawDefaultWheel();
+            }
+        }
+
+        function drawDefaultWheel() {
             const canvas = document.getElementById('wheelCanvas');
             const ctx = canvas.getContext('2d');
             const dpr = window.devicePixelRatio || 1;
@@ -4135,8 +4175,6 @@
             const allItems = [...gameData.rewards, ...gameData.punishments];
             const numSlices = 12;
             const anglePerSlice = (Math.PI * 2) / numSlices;
-
-            ctx.clearRect(0, 0, displayWidth, displayHeight);
 
             for (let i = 0; i < numSlices; i++) {
                 const startAngle = i * anglePerSlice;
